@@ -3,10 +3,11 @@
 /* DEFINES*/
 #define DAC_C1 25
 #define DAC_C2 26
-#define ADC_1  36
+#define ADC_CAP 34
 
 /* DECLARATIONS*/
 void simpleSinGenerator(void);
+void capacitiveRead(void);
 
 int main(void)
 {
@@ -16,9 +17,8 @@ int main(void)
 
     int capacitiveRaw = 0;
     
-
     simpleSinGenerator();
-
+    capacitiveRead();
     while(1)
     {
         printf("In loop: \n");
@@ -39,6 +39,18 @@ void simpleSinGenerator()
             //                 offset  amp       freq               
             dacWrite(DAC_C1, int(128 + 64 * sin(freqMultiplier * degree * PI / 180)));
         }
+    }
+}
+
+void capacitiveRead()
+{
+    uint16_t capacitive_raw = 0;
+    while(1)
+    {
+        // 12 bit resolution, 4095 = 3.3V
+        capacitive_raw = analogRead(ADC_CAP);
+        printf("Raw analog value is: %d \n", capacitive_raw);
+        delay(100);
     }
 }
 

@@ -3,6 +3,7 @@
 /* DEFINES*/
 #define DAC_C1 25
 #define DAC_C2 26
+#define ADC_1  36
 
 /* DECLARATIONS*/
 void simpleSinGenerator(void);
@@ -13,12 +14,17 @@ int main(void)
     delay(10);
     printf("Serial Opened, program starting: \n");
 
+    int capacitiveRaw = 0;
+    
+
     simpleSinGenerator();
 
     while(1)
     {
         printf("In loop: \n");
+        // capacitiveRaw = analogRead(36);
         delay(1000);
+
     }
 }
 

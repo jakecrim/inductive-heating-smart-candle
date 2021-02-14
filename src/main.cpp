@@ -35,11 +35,13 @@ void tasksOpen()
     printf("Opening FreeRTOS Tasks: \n");
     
     xTaskCreate(vPressureSenseTask, "Pressure Sense", PRESSURE_SENSE_STACK_SIZE, NULL, PRESSURE_SENSE_PRIORITY, NULL);
+    xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
 }
 
 // only used to get to main, achieves a more normal looking program structure
 void setup() 
 {
+
     main();
 }
 

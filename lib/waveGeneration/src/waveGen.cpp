@@ -16,5 +16,5 @@ void simpleSinGenerator()
 
 void complexSinGenerator()
 {  
-
+    printf("Test \n");
 }

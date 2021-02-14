@@ -1,4 +1,5 @@
 // All wave / function generation related
+
 #ifndef waveGen
 #define waveGen
 

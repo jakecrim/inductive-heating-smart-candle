@@ -9,20 +9,32 @@ const char * password = "Kaiser99";
 
 void vWirelessMaintenanceTask(void * parameter)
 {
+    int connectionAttemptCount = 0;
+
     for(;;)
     {
 
         if(WiFi.status() == WL_CONNECTED)
             printf("WiFi Connected to: %s \n", ssid);
         else
+        {
             printf("WiFi not connected: \n");
+            connectionAttemptCount++;
+            if(connectionAttemptCount > 20)
+            {
+                printf("Restarting to attempt Wi-Fi Connection:\n");
+                delay(5000);
+                ESP.restart();
+            }
+        }
         delay(10000);
     }
 }
 
 void wirelessOpen()
 {
-    printf("Setting up Wi-Fi: \n");
+    printf("|----------------------------|\n");
+    printf("Opening Wi-Fi Control\n");
     WiFi.begin(ssid,password);
     while(WiFi.status() != WL_CONNECTED)
     {

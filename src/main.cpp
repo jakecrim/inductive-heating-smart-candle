@@ -3,6 +3,7 @@
 #include <pressureSense.h>
 #include <waveGen.h>
 #include <wireless.h>
+#include <hardwareIO.h>
 
 /* DECLARATIONS*/
 void tasksOpen(void); // openFreeRTOS tasks
@@ -16,7 +17,9 @@ int main(void)
     delay(10);
     printf("Serial Opened, program starting: \n");
 
-    // Setup and Connect to Wi-Fi
+    // Configure the hardware inputs and outputs (push-buttons, gpio high/low for coil control)
+    gpioOpen();
+    // Setup and Connect to Wi-Fi 
     wirelessOpen();
     // Open the main freeRTOS system tasks (threads)
     tasksOpen();
@@ -34,9 +37,14 @@ void tasksOpen()
 {
     printf("Opening FreeRTOS Tasks: \n");
     
-    xTaskCreate(vPressureSenseTask, "Pressure Sense", PRESSURE_SENSE_STACK_SIZE, NULL, PRESSURE_SENSE_PRIORITY, NULL);
+    // Wireless Smart Tasks
     xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
+    // Coil Switching Manage -> GPIO High/Low Control / External Hardware Inputs
+    xTaskCreate(vHardwareInputsTask, "Hardware Inputs", HARDWARE_INPUTS_STACK_SIZE, NULL, HARDWARE_INPUTS_PRIORITY, NULL);
+    // Feedback Loop Sensors
+    xTaskCreate(vPressureSenseTask, "Pressure Sense", PRESSURE_SENSE_STACK_SIZE, NULL, PRESSURE_SENSE_PRIORITY, NULL);
 }
+
 
 // only used to get to main, achieves a more normal looking program structure
 void setup() 

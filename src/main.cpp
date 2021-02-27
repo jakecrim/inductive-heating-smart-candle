@@ -17,7 +17,7 @@ int main(void)
     printf("Serial Opened, program starting: \n");
 
     // Setup and Connect to Wi-Fi
-    wirelessOpen();
+    //wirelessOpen();
     // Open the main freeRTOS system tasks (threads)
     tasksOpen();
 

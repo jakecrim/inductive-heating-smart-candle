@@ -4,6 +4,8 @@
 /* INCLUDES */
 #include <smartCandleSys.h>
 
+/* DEFINES*/
+#define BLYNK_PRINT Serial
 
 /* DECLARATIONS */
 void wirelessOpen(void);

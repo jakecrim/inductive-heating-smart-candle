@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "wireless.h": "c"
+        "wireless.h": "c",
+        "smartcandlesys.h": "c"
     }
 }

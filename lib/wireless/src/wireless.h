@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <smartCandleSys.h>
 
+
 /* DECLARATIONS */
 void wirelessOpen(void);
 void vWirelessMaintenanceTask(void * parameter);

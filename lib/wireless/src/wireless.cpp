@@ -1,5 +1,6 @@
 #include "wireless.h"
 #include <WiFi.h>
+#include <BlynkSimpleEsp32.h>
 
 // Globals
 // const char * ssid = "jakey";

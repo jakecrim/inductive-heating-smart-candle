@@ -7,8 +7,28 @@
 /* DECLARATIONS */
 void vHardwareInputsTask(void * parameter);
 void gpioOpen(void);
+void DDS_SetFreq();
+
+// for communicating with the DDS
+void send(unsigned long word);
+void clock_tick();
+void reset_tick();
+void freq_update_tick();
+unsigned long word_compute(unsigned long frequency);
+void send_bit(int value);
 
 /* DEFINES */
 #define BUTTON1 33
+
+#define PIN_DDS_RESET 11
+#define PIN_DDS_DATA 10
+#define PIN_DDS_FU_UD 9
+#define PIN_DDS_W_CLK 8
+
+#define PIN_LED LED_BUILTIN
+
+#define DELAY_US 500
+
+#define DDS_CLOCK 125000000
 
 #endif

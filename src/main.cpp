@@ -13,12 +13,18 @@ void tasksOpen(void); // openFreeRTOS tasks
 
 int main(void)
 {
+    // Open Serial for COMs and slight delay to allow for serial setup
     Serial.begin(115200);
     delay(10);
+
     printf("Serial Opened, program starting: \n");
 
     // Configure the hardware inputs and outputs (push-buttons, gpio high/low for coil control)
     gpioOpen();
+
+    // Set our Default Frequency for the DDS driving sin wave
+    DDS_SetFreq();
+
     // Setup and Connect to Wi-Fi 
     wirelessOpen();
     // Open the main freeRTOS system tasks (threads)

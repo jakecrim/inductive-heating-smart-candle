@@ -23,12 +23,11 @@ void vPressureSenseTask(void * parameter)
     for(;;)
     {
         capacitiveRead();
-        delay(100);
+		vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
 
 void capactiveOpen()
 {
     adc_chip1.begin();
-
 }

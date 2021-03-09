@@ -15,8 +15,7 @@ int main(void)
 {
     // Open Serial for COMs and slight delay to allow for serial setup
     Serial.begin(115200);
-    delay(10);
-
+    delayMicroseconds(5);
     printf("Serial Opened, program starting: \n");
 
     // Configure the hardware inputs and outputs (push-buttons, gpio high/low for coil control)
@@ -27,6 +26,7 @@ int main(void)
 
     // Setup and Connect to Wi-Fi 
     wirelessOpen();
+
     // Open the main freeRTOS system tasks (threads)
     tasksOpen();
 
@@ -45,10 +45,12 @@ void tasksOpen()
     
     // Wireless Smart Tasks
     xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
-    // Coil Switching Manage -> GPIO High/Low Control / External Hardware Inputs
+    // External Hardware Inputs
     xTaskCreate(vHardwareInputsTask, "Hardware Inputs", HARDWARE_INPUTS_STACK_SIZE, NULL, HARDWARE_INPUTS_PRIORITY, NULL);
     // Feedback Loop Sensors
     xTaskCreate(vPressureSenseTask, "Pressure Sense", PRESSURE_SENSE_STACK_SIZE, NULL, PRESSURE_SENSE_PRIORITY, NULL);
+    // Coil Switching Manage -> GPIO High/Low Control /  
+    xTaskCreate(vHardwareOutputsTask, "Hardware Outputs", HARDWARE_OUTPUTS_STACK_SIZE, NULL, HARDWARE_OUTPUTS_PRIORITY, NULL);
 }
 
 

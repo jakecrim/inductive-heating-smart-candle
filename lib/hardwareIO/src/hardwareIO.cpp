@@ -1,5 +1,9 @@
 #include "hardwareIO.h"
 
+/* GLOBALS */
+SemaphoreHandle_t sema_candle_state;
+bool candle_state_on;
+
 void vHardwareInputsTask(void * parameter)
 {
     int button1Input = 0;
@@ -16,27 +20,53 @@ void vHardwareInputsTask(void * parameter)
         {
             printf("Button2 Press Detected:\n");
         }
-        delay(50);
+        vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 
 }
 
+void vHardwareOutputsTask(void * parameter)
+{
+    candle_state_on = false;
+    sema_candle_state = xSemaphoreCreateBinary();
+    for(;;)
+    {
+        // if(xSemaphoreTake(sema_candle_state, portMAX_DELAY) == pdPASS)
+        // {
+        //     printf("Candle Turning ON/OFF: \n");
+        // }
+        if(candle_state_on == true)
+        {
+            signalCoil();
+        }
+
+        vTaskDelay(1500 / portTICK_PERIOD_MS);
+    }
+}
+
+void signalCoil()
+{
+    printf("Coils On: \n");
+}
+
 void DDS_SetFreq()
 {
+    // set pin directions
     pinMode(PIN_DDS_RESET, OUTPUT);
     pinMode(PIN_DDS_DATA, OUTPUT);
     pinMode(PIN_DDS_FU_UD, OUTPUT);
     pinMode(PIN_DDS_W_CLK, OUTPUT);
     // pinMode(PIN_LED, OUTPUT);
 
-
-
+    // default pin output states
     digitalWrite(PIN_DDS_RESET, LOW);
     digitalWrite(PIN_DDS_DATA, LOW);
     digitalWrite(PIN_DDS_FU_UD, LOW);
     digitalWrite(PIN_DDS_W_CLK, LOW);
     // digitalWrite(PIN_LED, LOW);
 
+    // to get the DDS up and running, reset twice, then 'send' any value, the DDS is now ready to
+    //      receieve our desired operating frequency
     Serial.write("DDS reset... ");
     reset_tick();
     Serial.write(" - Completed!\r\n");

@@ -16,6 +16,8 @@ void reset_tick();
 void freq_update_tick();
 unsigned long word_compute(unsigned long frequency);
 void send_bit(int value);
+void vHardwareOutputsTask(void * parameter);
+void signalCoil(void);
 
 /* DEFINES */
 #define BUTTON1 33
@@ -30,5 +32,9 @@ void send_bit(int value);
 #define DELAY_US 500
 
 #define DDS_CLOCK 125000000
+
+/* GLOBALS */
+extern SemaphoreHandle_t sema_candle_state;
+extern bool candle_state_on;
 
 #endif

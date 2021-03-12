@@ -27,6 +27,10 @@ void signalCoil(void);
 #define PIN_DDS_FU_UD 9
 #define PIN_DDS_W_CLK 8
 
+#define PIN_COIL1 20
+#define PIN_COIL2 21
+#define COIL_WRITE_DELAY 100
+
 #define PIN_LED LED_BUILTIN
 
 #define DELAY_US 500
@@ -36,5 +40,6 @@ void signalCoil(void);
 /* GLOBALS */
 extern SemaphoreHandle_t sema_candle_state;
 extern bool candle_state_on;
+extern int coil_number_select;
 
 #endif

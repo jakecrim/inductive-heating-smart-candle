@@ -1,5 +1,6 @@
 #include "waveGen.h"
 
+// **************UNUSED *********
 void simpleSinGenerator()
 {
     int freqMultiplier = 1;

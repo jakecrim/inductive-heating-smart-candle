@@ -1,7 +1,18 @@
+// ************************************* //
+//	    ~ Overview of system ~       	 //
+//                                       //
+// - One time setup functions are called,//
+//   then the threads aka 'tasks' are    //
+//   opened, see 'tasksOpen'. These tasks//
+//   are the routines that handle all    //
+//   the parts of the systems, so check  //
+//   them out each to get a feel of how  //
+//   the system is working.              //
+// ************************************* //
+
 #include <smartCandleSys.h> // overall system header
 // Headers for specific functionality
 #include <pressureSense.h>
-#include <waveGen.h>
 #include <wireless.h>
 #include <hardwareIO.h>
 
@@ -9,6 +20,7 @@
 void tasksOpen(void); // openFreeRTOS tasks
 
 /* GLOBALS */
+
 
 
 int main(void)
@@ -32,7 +44,7 @@ int main(void)
 
     while(1)
     {
-        printf("In loop: \n");
+        // Sits idle in here, as the threads or 'tasks' in the 'tasksOpen()' function do their routine things
         delay(1000);
     }
 
@@ -42,14 +54,16 @@ int main(void)
 void tasksOpen()
 {
     printf("Opening FreeRTOS Tasks: \n");
+
+    // the first thing passed to xTaskCreate is the function name, see the indicated folders and files to find this function
     
-    // Wireless Smart Tasks
+    // Wireless Smart Tasks (see wireless folder)
     xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
-    // External Hardware Inputs
+    // External Hardware Inputs (see hardwareIO folder)
     xTaskCreate(vHardwareInputsTask, "Hardware Inputs", HARDWARE_INPUTS_STACK_SIZE, NULL, HARDWARE_INPUTS_PRIORITY, NULL);
-    // Feedback Loop Sensors
+    // Feedback Loop Sensors (see pressure folder)
     xTaskCreate(vPressureSenseTask, "Pressure Sense", PRESSURE_SENSE_STACK_SIZE, NULL, PRESSURE_SENSE_PRIORITY, NULL);
-    // Coil Switching Manage -> GPIO High/Low Control /  
+    // Coil Switching Manage -> GPIO High/Low Control (see hardwareIO folder)  
     xTaskCreate(vHardwareOutputsTask, "Hardware Outputs", HARDWARE_OUTPUTS_STACK_SIZE, NULL, HARDWARE_OUTPUTS_PRIORITY, NULL);
 }
 

@@ -3,6 +3,7 @@
 /* GLOBALS */
 SemaphoreHandle_t sema_candle_state;
 bool candle_state_on;
+int coil_number_select;
 
 void vHardwareInputsTask(void * parameter)
 {
@@ -12,15 +13,19 @@ void vHardwareInputsTask(void * parameter)
     for(;;)
     {
         button1Input = digitalRead(BUTTON1);
+
+        // ON/OFF button of candle
+        // currently a polled solution, could be made into an interrupt based solution
         if(button1Input == 1)
         {
-            printf("Button1 Press Detected:\n");
+            printf("Candle ON Requested from external ON/OFF Button:\n");
         }
+        // optional future input button for other functionality options
         if(button2Input == 1)
         {
             printf("Button2 Press Detected:\n");
         }
-        vTaskDelay(50 / portTICK_PERIOD_MS);
+        vTaskDelay(40 / portTICK_PERIOD_MS);
     }
 
 }
@@ -31,26 +36,49 @@ void vHardwareOutputsTask(void * parameter)
     sema_candle_state = xSemaphoreCreateBinary();
     for(;;)
     {
-        // if(xSemaphoreTake(sema_candle_state, portMAX_DELAY) == pdPASS)
-        // {
-        //     printf("Candle Turning ON/OFF: \n");
-        // }
+        // candle_state_on is set to true at either:
+        //     a. Hardware Button Input or 
+        //     b. in wireless smart tasks where a message over Wi-Fi can request the candle ON
         if(candle_state_on == true)
         {
             signalCoil();
         }
+        
+        // Optional Code for if I decide a semaphore is a better solution for signaling
+        // if(xSemaphoreTake(sema_candle_state, portMAX_DELAY) == pdPASS)
+        // {
+        //     printf("Candle Turning ON/OFF: \n");
+        // }
 
         vTaskDelay(1500 / portTICK_PERIOD_MS);
     }
 }
 
+//  function for sending signal to correct coil circuit choice to turn ON/OFF
 void signalCoil()
 {
     printf("Coils On: \n");
+    if(coil_number_select == 1)
+    {
+        digitalWrite(PIN_COIL1, HIGH);
+        delay(COIL_WRITE_DELAY);
+        digitalWrite(PIN_COIL1, LOW);
+    }
+    else if(coil_number_select == 2)
+    {
+        digitalWrite(PIN_COIL2, HIGH);
+        delay(COIL_WRITE_DELAY);
+        digitalWrite(PIN_COIL2, LOW);
+    }
+
 }
 
+// Sets the frequency of the DDS Function Generator Module to drive the capacitive circuit
 void DDS_SetFreq()
 {
+    unsigned long freq_word;
+    unsigned long converted_freq_word;
+
     // set pin directions
     pinMode(PIN_DDS_RESET, OUTPUT);
     pinMode(PIN_DDS_DATA, OUTPUT);
@@ -63,7 +91,7 @@ void DDS_SetFreq()
     digitalWrite(PIN_DDS_DATA, LOW);
     digitalWrite(PIN_DDS_FU_UD, LOW);
     digitalWrite(PIN_DDS_W_CLK, LOW);
-    // digitalWrite(PIN_LED, LOW);
+    // digitalWrite(PIN_LED, LOW); // unusued currently
 
     // to get the DDS up and running, reset twice, then 'send' any value, the DDS is now ready to
     //      receieve our desired operating frequency
@@ -77,6 +105,11 @@ void DDS_SetFreq()
     send(0);
     delay(1000);
 
+    // Set Module to 100 Khz
+    freq_word = 100000;
+    converted_freq_word = word_compute(freq_word);
+    send(converted_freq_word);
+    delay(1000);
 }
 
 void gpioOpen()
@@ -84,13 +117,12 @@ void gpioOpen()
     printf("|----------------------------|\n");
     printf("Opening Hardware IO Control \n");
     pinMode(BUTTON1, INPUT);
+    pinMode(PIN_COIL1, OUTPUT);
+    pinMode(PIN_COIL2, OUTPUT);
 
-    // DDS Board Setup
-    // pinMode(PIN_DDS_RESET, OUTPUT);
-    // pinMode(PIN_DDS_DATA, OUTPUT);
-    // pinMode(PIN_DDS_FU_UD, OUTPUT);
-    // pinMode(PIN_DDS_W_CLK, OUTPUT);
-    // pinMode(PIN_LED, OUTPUT);
+    // by default use coil option '1'
+    coil_number_select = 1;
+
 }
 
 void send(unsigned long word) {

@@ -8,8 +8,10 @@
 // const char * password = "12345678";
 // const char * ssid = "Choma 5G";
 // const char * password = "Kaiser99";
-char ssid[] = "Choma 5G";
-char pass[] = "Kaiser99";
+// char ssid[] = "Choma 5G";
+// char pass[] = "Kaiser99";
+char ssid[] = "jakey";
+char pass[] = "12345678";
 
 // auth token for blynk servers
 char auth[] = "6aW_cmjPMMIvBDqwQ20cJh3kkwYCj-7y";

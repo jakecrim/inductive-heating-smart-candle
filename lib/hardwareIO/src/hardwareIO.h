@@ -22,13 +22,13 @@ void signalCoil(void);
 /* DEFINES */
 #define BUTTON1 33
 
-#define PIN_DDS_RESET 11
-#define PIN_DDS_DATA 10
-#define PIN_DDS_FU_UD 9
-#define PIN_DDS_W_CLK 8
+#define PIN_DDS_RESET 4 // 11
+#define PIN_DDS_DATA 0  // 10
+#define PIN_DDS_FU_UD 2  // 9
+#define PIN_DDS_W_CLK 15 // 8
 
-#define PIN_COIL1 20
-#define PIN_COIL2 21
+#define PIN_COIL1 19
+#define PIN_COIL2 18
 #define COIL_WRITE_DELAY 100
 
 #define PIN_LED LED_BUILTIN

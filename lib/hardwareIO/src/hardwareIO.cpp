@@ -1,9 +1,11 @@
 #include "hardwareIO.h"
+#include <LiquidCrystal_I2C.h>
 
 /* GLOBALS */
 SemaphoreHandle_t sema_candle_state;
 bool candle_state_on;
 int coil_number_select;
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 void vHardwareInputsTask(void * parameter)
 {
@@ -41,9 +43,13 @@ void vHardwareOutputsTask(void * parameter)
         //     b. in wireless smart tasks where a message over Wi-Fi can request the candle ON
         if(candle_state_on == true)
         {
-            signalCoil();
+            // signalCoil();
         }
-        
+        digitalWrite(11, LOW);
+        printf("HIGH: \n");
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        digitalWrite(11, LOW);
+        vTaskDelay(1000/ portTICK_PERIOD_MS);
         // Optional Code for if I decide a semaphore is a better solution for signaling
         // if(xSemaphoreTake(sema_candle_state, portMAX_DELAY) == pdPASS)
         // {
@@ -57,20 +63,20 @@ void vHardwareOutputsTask(void * parameter)
 //  function for sending signal to correct coil circuit choice to turn ON/OFF
 void signalCoil()
 {
-    printf("Coils On: \n");
     if(coil_number_select == 1)
     {
+        printf("Coil 1 On: \n");
         digitalWrite(PIN_COIL1, HIGH);
-        delay(COIL_WRITE_DELAY);
+        vTaskDelay(COIL_WRITE_DELAY / portTICK_PERIOD_MS);
         digitalWrite(PIN_COIL1, LOW);
     }
     else if(coil_number_select == 2)
     {
+        printf("Coil 2 On: \n");
         digitalWrite(PIN_COIL2, HIGH);
-        delay(COIL_WRITE_DELAY);
+        vTaskDelay(COIL_WRITE_DELAY / portTICK_PERIOD_MS);
         digitalWrite(PIN_COIL2, LOW);
     }
-
 }
 
 // Sets the frequency of the DDS Function Generator Module to drive the capacitive circuit
@@ -119,6 +125,14 @@ void gpioOpen()
     pinMode(BUTTON1, INPUT);
     pinMode(PIN_COIL1, OUTPUT);
     pinMode(PIN_COIL2, OUTPUT);
+    pinMode(11, OUTPUT);
+
+    // LCD Display Setup
+    lcd.begin(16, 2);
+    lcd.clear();
+
+    lcd.setCursor(0,0);
+    lcd.print("V1:");
 
     // by default use coil option '1'
     coil_number_select = 1;

@@ -26,11 +26,15 @@ void vPressureSenseTask(void * parameter)
     for(;;)
     {
         capacitive_raw = capacitiveRead();
-
+        printf("Capacitive Raw: %d \n", capacitive_raw);
         // switch coils if true
         if(capacitive_raw < COIL_SWITCH_THRESHOLD)
         {
             coil_number_select = 2;
+        }
+        if(capacitive_raw > 7600)
+        {
+            coil_number_select = 1;
         }
 		vTaskDelay(250 / portTICK_PERIOD_MS);
     }

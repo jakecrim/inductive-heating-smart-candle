@@ -18,6 +18,6 @@ void capacitiveOpen(void);
 #define SCL_1   22
 
 // switch coils if the analog reading is less than this value
-#define COIL_SWITCH_THRESHOLD 32000
+#define COIL_SWITCH_THRESHOLD 7590
 
 #endif

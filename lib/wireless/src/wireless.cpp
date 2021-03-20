@@ -56,12 +56,15 @@ BLYNK_WRITE(V1)
 // Code for a timer based input option if time allows from IOS app
 BLYNK_WRITE(V3)
 {
-    int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+    int timerValue = param.asInt(); // assigning incoming value from pin V1 to a variable
     // You can also use:
     // String i = param.asStr();
     // double d = param.asDouble();
-    Serial.print("V3 Time value is: ");
-    Serial.println(pinValue);
+    Serial.print("V3 Time value is 1200000 ms: ");
+    candle_state_on = true;
+    Serial.println(timerValue);
+    delay(timerValue);
+    candle_state_on = false;
 }
 
 void wirelessOpen()

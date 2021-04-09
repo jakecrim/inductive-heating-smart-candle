@@ -28,14 +28,14 @@ int main(void)
     // Open Serial for COMs and slight delay to allow for serial setup
     Serial.begin(115200);
 
-    pinMode(23, OUTPUT);
-    while(1)
-    {
-        digitalWrite(23, HIGH);
-        delay(1000);
-        digitalWrite(23, LOW);
-        delay(1000);
-    }
+    // pinMode(23, OUTPUT);
+    // while(1)
+    // {
+    //     digitalWrite(23, HIGH);
+    //     delay(1000);
+    //     digitalWrite(23, LOW);
+    //     delay(1000);
+    // }
     delayMicroseconds(5);
     printf("Serial Opened, program starting: \n");
 

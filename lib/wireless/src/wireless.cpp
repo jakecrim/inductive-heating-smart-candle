@@ -4,14 +4,12 @@
 #include <hardwareIO.h>
 
 /* GLOBALS */
-// const char * ssid = "jakey";
-// const char * password = "12345678";
-// const char * ssid = "Choma 5G";
-// const char * password = "Kaiser99";
 // char ssid[] = "Choma 5G";
 // char pass[] = "Kaiser99";
 char ssid[] = "jakey";
 char pass[] = "12345678";
+// char ssid[] = "CenturyLink0891";
+// char pass[] = "DDLodge!2020";
 
 // auth token for blynk servers
 char auth[] = "6aW_cmjPMMIvBDqwQ20cJh3kkwYCj-7y";
@@ -43,6 +41,8 @@ BLYNK_WRITE(V0)
     {
         printf("Button OFF Request from IOS App \n");
         candle_state_on = false;
+        digitalWrite(PIN_COIL1, LOW);
+        digitalWrite(PIN_COIL2, LOW);
     }
 }
 

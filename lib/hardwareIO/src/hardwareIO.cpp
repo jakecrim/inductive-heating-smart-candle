@@ -14,13 +14,27 @@ void vHardwareInputsTask(void * parameter)
 
     for(;;)
     {
-        button1Input = digitalRead(BUTTON1);
-
+        if(button1Input == 0)
+        {
+            button1Input = digitalRead(BUTTON1);
+        }
         // ON/OFF button of candle
         // currently a polled solution, could be made into an interrupt based solution
-        if(button1Input == 1)
+        if(button1Input == 1 && candle_state_on == false)
         {
             printf("Candle ON Requested from external ON/OFF Button:\n");
+            candle_state_on = true;
+            button1Input = 0;
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+        }
+        if(button1Input == 1 && candle_state_on == true)
+        {
+            printf("Candle OFF Requested from external ON/OFF Button:\n");
+            digitalWrite(PIN_COIL1, LOW);
+            digitalWrite(PIN_COIL2, LOW);
+            candle_state_on = false;
+            button1Input = 0;
+            vTaskDelay(500 / portTICK_PERIOD_MS);
         }
         // optional future input button for other functionality options
         if(button2Input == 1)
@@ -36,6 +50,7 @@ void vHardwareOutputsTask(void * parameter)
 {
     candle_state_on = false;
     sema_candle_state = xSemaphoreCreateBinary();
+    int count = 0;
     for(;;)
     {
         // candle_state_on is set to true at either:
@@ -43,20 +58,19 @@ void vHardwareOutputsTask(void * parameter)
         //     b. in wireless smart tasks where a message over Wi-Fi can request the candle ON
         if(candle_state_on == true)
         {
-            // signalCoil();
+            signalCoil();
         }
-        digitalWrite(11, LOW);
-        printf("HIGH: \n");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        digitalWrite(11, LOW);
-        vTaskDelay(1000/ portTICK_PERIOD_MS);
         // Optional Code for if I decide a semaphore is a better solution for signaling
         // if(xSemaphoreTake(sema_candle_state, portMAX_DELAY) == pdPASS)
         // {
         //     printf("Candle Turning ON/OFF: \n");
         // }
+        // lcd.setCursor(0,1);
+        // lcd.print(count);
 
-        vTaskDelay(1500 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        count++;
+        // lcd.clear();
     }
 }
 
@@ -67,16 +81,39 @@ void signalCoil()
     {
         printf("Coil 1 On: \n");
         digitalWrite(PIN_COIL1, HIGH);
+        digitalWrite(PIN_COIL2, LOW);
         vTaskDelay(COIL_WRITE_DELAY / portTICK_PERIOD_MS);
-        digitalWrite(PIN_COIL1, LOW);
+        // digitalWrite(PIN_COIL1, LOW);
     }
     else if(coil_number_select == 2)
     {
         printf("Coil 2 On: \n");
+        digitalWrite(PIN_COIL1, LOW);
         digitalWrite(PIN_COIL2, HIGH);
         vTaskDelay(COIL_WRITE_DELAY / portTICK_PERIOD_MS);
-        digitalWrite(PIN_COIL2, LOW);
+        // digitalWrite(PIN_COIL2, LOW);
     }
+}
+
+void printLCD(uint16_t data)
+{
+    delay(50);
+    lcd.clear();
+    delayMicroseconds(10);
+    lcd.setCursor(0,0);
+    lcd.print("- Smart Candle -");
+    lcd.setCursor(0,1);
+    lcd.print("C:");
+    if(candle_state_on == true)
+    {
+        lcd.print(coil_number_select);
+    }
+    else
+    {
+        lcd.print("-");
+    }
+    lcd.print(" Analog: ");
+    lcd.print(data);
 }
 
 // Sets the frequency of the DDS Function Generator Module to drive the capacitive circuit
@@ -111,8 +148,8 @@ void DDS_SetFreq()
     send(0);
     delay(1000);
 
-    // Set Module to 100 Khz
-    freq_word = 100000;
+    // Set Module to 15 Khz
+    freq_word = 15000;
     converted_freq_word = word_compute(freq_word);
     send(converted_freq_word);
     delay(1000);
@@ -125,14 +162,16 @@ void gpioOpen()
     pinMode(BUTTON1, INPUT);
     pinMode(PIN_COIL1, OUTPUT);
     pinMode(PIN_COIL2, OUTPUT);
-    pinMode(11, OUTPUT);
 
     // LCD Display Setup
     lcd.begin(16, 2);
+    lcd.backlight();
     lcd.clear();
 
     lcd.setCursor(0,0);
-    lcd.print("V1:");
+    lcd.print("- Smart Candle -");
+    lcd.setCursor(0,1);
+    lcd.print("Wi-Fi connecting...");
 
     // by default use coil option '1'
     coil_number_select = 1;

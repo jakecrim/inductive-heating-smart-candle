@@ -10,7 +10,8 @@
 //   the system is working.              //
 // ************************************* //
 
-#include <smartCandleSys.h> // overall system header
+// overall system header
+#include <smartCandleSys.h> 
 // Headers for specific functionality
 #include <pressureSense.h>
 #include <wireless.h>
@@ -22,20 +23,11 @@ void tasksOpen(void); // openFreeRTOS tasks
 /* GLOBALS */
 
 
-
 int main(void)
 {
     // Open Serial for COMs and slight delay to allow for serial setup
     Serial.begin(115200);
 
-    pinMode(23, OUTPUT);
-    while(1)
-    {
-        digitalWrite(23, HIGH);
-        delay(1000);
-        digitalWrite(23, LOW);
-        delay(1000);
-    }
     delayMicroseconds(5);
     printf("Serial Opened, program starting: \n");
 
@@ -46,7 +38,7 @@ int main(void)
     DDS_SetFreq();
 
     // Setup and Connect to Wi-Fi 
-    wirelessOpen();
+    // wirelessOpen();
 
     // Open the main freeRTOS system tasks (threads)
     tasksOpen();
@@ -67,7 +59,7 @@ void tasksOpen()
     // the first thing passed to xTaskCreate is the function name, see the indicated folders and files to find this function
     
     // Wireless Smart Tasks (see wireless folder)
-    xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
+    // xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
     // External Hardware Inputs (see hardwareIO folder)
     xTaskCreate(vHardwareInputsTask, "Hardware Inputs", HARDWARE_INPUTS_STACK_SIZE, NULL, HARDWARE_INPUTS_PRIORITY, NULL);
     // Feedback Loop Sensors (see pressure folder)

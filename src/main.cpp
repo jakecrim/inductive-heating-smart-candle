@@ -31,7 +31,7 @@ int main(void)
     delayMicroseconds(5);
     printf("Serial Opened, program starting: \n");
 
-    // Configure the hardware inputs and outputs (push-buttons, gpio high/low for coil control)
+    // Configure the hardware inputs and outputs (push-buttons, gpio high/low for coil control, analog read pins, etc)
     gpioOpen();
 
     // Set our Default Frequency for the DDS driving sin wave
@@ -58,8 +58,10 @@ void tasksOpen()
 
     // the first thing passed to xTaskCreate is the function name, see the indicated folders and files to find this function
     
-    // Wireless Smart Tasks (see wireless folder)
-    // xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
+    /* Wireless Smart Tasks (see wireless folder) */
+    xTaskCreate(vWirelessMaintenanceTask, "Wireless Maintenance", WIRELESS_STACK_SIZE, NULL, WIRELESS_PRIORITY, NULL);
+
+    /* Coil Switching Manager */
     // External Hardware Inputs (see hardwareIO folder)
     xTaskCreate(vHardwareInputsTask, "Hardware Inputs", HARDWARE_INPUTS_STACK_SIZE, NULL, HARDWARE_INPUTS_PRIORITY, NULL);
     // Feedback Loop Sensors (see pressure folder)

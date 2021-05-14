@@ -4,12 +4,10 @@
 
 /* INCLUDES */
 #include <smartCandleSys.h>
-#include <Adafruit_ADS1015.h>
 
 /* DECLARATIONS*/
 uint16_t capacitiveRead(void);
 void vPressureSenseTask(void * parameter);
-void capacitiveOpen(void);
 
 /* DEFINES */
 // pins

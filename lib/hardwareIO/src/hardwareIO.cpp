@@ -2,6 +2,11 @@
 #include <LiquidCrystal_I2C.h>
 
 /* GLOBALS */
+/*--------------------------------------------------------------------
+Note from future self four years later, these globals should have
+definetely not been true globals, and should have had mutex protection
+as I am changing their values across various threads in the RTOS here.
+--------------------------------------------------------------------*/
 SemaphoreHandle_t sema_candle_state;
 bool candle_state_on;
 int coil_number_select;
